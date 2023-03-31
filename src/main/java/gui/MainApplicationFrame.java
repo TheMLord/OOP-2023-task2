@@ -40,6 +40,7 @@ public class MainApplicationFrame extends JFrame {
 
         //Создаем окно логов и добавляем на экран
         LogWindow logWindow = createLogWindow();
+        logWindow.setSize(configLogWindow.getSize());
         logWindow.setLocation(configLogWindow.getLocation());
         addWindow(logWindow);
 

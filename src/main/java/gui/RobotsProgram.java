@@ -40,7 +40,6 @@ public class RobotsProgram {
         SwingUtilities.invokeLater(() -> {
             getConfig(); // получаем конфигурацию панелей
             MainApplicationFrame frame = new MainApplicationFrame();
-            frame.setLayout(new BorderLayout());
             frame.pack();
             frame.setVisible(true);
             frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -72,6 +71,7 @@ public class RobotsProgram {
 
         Component[] components = frame.getContentPane().getComponents();
         for (Component component : components) {
+            System.out.println(component);
             String name = "";
             Matcher matcherTitle = patternTitle.matcher(component.toString());
             if (matcherTitle.find()) {

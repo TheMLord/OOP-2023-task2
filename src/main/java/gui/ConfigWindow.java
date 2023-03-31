@@ -4,12 +4,8 @@ import java.awt.*;
 
 public class ConfigWindow {
 
-    //    private Integer locationX;
-//    private Integer locationY;
-//    private Integer SizeWidth;
-//    private Integer SizeHeight;
-    private Dimension size;
-    private Point location;
+    private final Dimension size;
+    private final Point location;
 
     public ConfigWindow(Point location, Dimension size) {
         this.size = size;
