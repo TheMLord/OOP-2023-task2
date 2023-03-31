@@ -15,11 +15,7 @@ public class GameWindow extends JInternalFrame {
         super("Игровое поле", true, true, true, true);
         m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer);
-        panel.setBounds(configGameWindow.getLocationX(),
-                configGameWindow.getLocationY(),
-                configGameWindow.getWidth(),
-                configGameWindow.getHeight());
+        panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
     }

@@ -1,7 +1,6 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JDesktopPane;
@@ -17,6 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import log.Logger;
 
 import static gui.RobotsProgram.configGameWindow;
+import static gui.RobotsProgram.configLogWindow;
 
 /**
  * Что требуется сделать:
@@ -40,11 +40,13 @@ public class MainApplicationFrame extends JFrame {
 
         //Создаем окно логов и добавляем на экран
         LogWindow logWindow = createLogWindow();
+        logWindow.setLocation(configLogWindow.getLocation());
         addWindow(logWindow);
 
         //создаем окно с игрой и добавляем его на экран
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(configGameWindow.getSize());
+        gameWindow.setLocation(configGameWindow.getLocation());
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
@@ -53,7 +55,7 @@ public class MainApplicationFrame extends JFrame {
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
+        logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();

@@ -40,6 +40,7 @@ public class RobotsProgram {
         SwingUtilities.invokeLater(() -> {
             getConfig(); // получаем конфигурацию панелей
             MainApplicationFrame frame = new MainApplicationFrame();
+            frame.setLayout(new BorderLayout());
             frame.pack();
             frame.setVisible(true);
             frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -106,26 +107,20 @@ public class RobotsProgram {
     private static void getConfig() {
         //получаем файл конфигурации
         configWindowHashMap = readTxtConfig();
-        System.out.println(configWindowHashMap);
         try {
             String[] locationGameWindow = configWindowHashMap.get("Игровое полеLocation").split(" ");
             String[] SizeGameWindow = configWindowHashMap.get("Игровое полеSize").split(" ");
             String[] locationLogWindow = configWindowHashMap.get("Протокол работыLocation").split(" ");
             String[] SizeLogWindow = configWindowHashMap.get("Протокол работыSize").split(" ");
-
-            configLogWindow = new ConfigWindow(Integer.parseInt(locationLogWindow[0]), Integer.parseInt(locationLogWindow[1]),
-                    new Dimension(Integer.parseInt(SizeLogWindow[0]), Integer.parseInt(SizeLogWindow[1])),
-                    Integer.parseInt(SizeLogWindow[0]),
-                    Integer.parseInt(SizeLogWindow[1]));
-            configGameWindow = new ConfigWindow(Integer.parseInt(locationGameWindow[0]), Integer.parseInt(locationGameWindow[1]),
-                    new Dimension(Integer.parseInt(SizeGameWindow[0]), Integer.parseInt(SizeGameWindow[1])),
-                    Integer.parseInt(SizeGameWindow[0]),
-                    Integer.parseInt(SizeGameWindow[1]));
+            configLogWindow = new ConfigWindow(
+                    new Point(Integer.parseInt(locationLogWindow[0]), Integer.parseInt(locationLogWindow[1])),
+                    new Dimension(Integer.parseInt(SizeLogWindow[0]), Integer.parseInt(SizeLogWindow[1])));
+            configGameWindow = new ConfigWindow(
+                    new Point(Integer.parseInt(locationGameWindow[0]), Integer.parseInt(locationGameWindow[1])),
+                    new Dimension(Integer.parseInt(SizeGameWindow[0]), Integer.parseInt(SizeGameWindow[1])));
         } catch (Exception e) {
-            configLogWindow = new ConfigWindow(0, 0,
-                    new Dimension(200, 500), 200, 500);
-            configGameWindow = new ConfigWindow(0, 0,
-                    new Dimension(400, 400), 400, 400);
+            configLogWindow = new ConfigWindow(new Point(0, 0), new Dimension(200, 500));
+            configGameWindow = new ConfigWindow(new Point(0, 0), new Dimension(400, 400));
             System.out.println("Восстановление параметров по умолчанию");
         }
     }
