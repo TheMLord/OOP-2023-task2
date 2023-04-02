@@ -1,5 +1,5 @@
 /.metadata
 /robots/.settings
 /robots/bin
-/target
+/target/classes
 eclipse.bat
