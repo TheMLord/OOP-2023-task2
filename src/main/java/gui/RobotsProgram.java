@@ -5,7 +5,15 @@ import java.awt.Frame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+/**
+ * Класс maim программы
+ */
 public class RobotsProgram {
+    /**
+     * Функция - main - точка входа программы
+     *
+     * @param args - массив аргументов типа String для main
+     */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
