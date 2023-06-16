@@ -5,9 +5,6 @@ import java.awt.BorderLayout;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import static gui.RobotsProgram.configGameWindow;
-
-
 public class GameWindow extends JInternalFrame {
     private final GameVisualizer m_visualizer;
 
