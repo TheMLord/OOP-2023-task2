@@ -1,11 +1,9 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.*;
 
 
 import log.Logger;
@@ -27,12 +25,17 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
+        GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
         setJMenuBar(new MenuBar(this));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitWindow();
+            }
+        });
     }
 
     protected LogWindow createLogWindow() {
@@ -45,8 +48,29 @@ public class MainApplicationFrame extends JFrame {
         return logWindow;
     }
 
+    protected GameWindow createGameWindow() {
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setSize(400, 400);
+        return gameWindow;
+    }
+
+    protected void exitWindow() {
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+
+
+        int option = JOptionPane.showConfirmDialog(this,
+                "Вы уверены, что хотите закрыть приложение?",
+                "Подтверждение",
+                JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
+    }
+
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
+
 }
