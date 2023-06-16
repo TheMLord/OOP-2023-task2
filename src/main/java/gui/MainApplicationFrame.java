@@ -27,8 +27,7 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
+        GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
         setJMenuBar(new MenuBar(this));
@@ -43,6 +42,12 @@ public class MainApplicationFrame extends JFrame {
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
+    }
+
+    protected GameWindow createGameWindow() {
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setSize(400, 400);
+        return gameWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {
