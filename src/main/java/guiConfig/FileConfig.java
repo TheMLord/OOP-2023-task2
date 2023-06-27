@@ -98,9 +98,8 @@ public class FileConfig {
                 for (ConfigInternalFrame configInternalFrame : configInternalFrames) {
                     if (configInternalFrame.getFrameName().equals("Протокол работы")) {
                         configInternalFrameHashMaphashMap.put("Протокол работы", configInternalFrame);
-                    } else {
+                    } else if (configInternalFrame.getFrameName().equals("Игровое поле")) {
                         configInternalFrameHashMaphashMap.put("Игровое поле", configInternalFrame);
-
                     }
                 }
                 return configInternalFrameHashMaphashMap;
