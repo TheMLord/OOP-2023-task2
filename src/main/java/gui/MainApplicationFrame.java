@@ -11,15 +11,20 @@ import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
 import java.util.Map;
 
-
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
+
+import controller.GameController;
+import model.log.Logger;
+import model.robot.ModelRobot;
+import model.robot.ModelTarget;
+
 import guiConfig.ConfigInternalFrame;
 import guiConfig.ConfigMainPane;
 import guiConfig.FileConfig;
-import log.Logger;
+
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -41,11 +46,18 @@ public class MainApplicationFrame extends JFrame {
         desktopPane.setSize(configMainPane.getMainPaneSize());
         setContentPane(desktopPane);
 
+        ModelTarget modelTarget = new ModelTarget(100, 100);
+        ModelRobot modelRobot = new ModelRobot(modelTarget, 100, 150);
+        GameController gameController = new GameController(modelTarget);
+
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = createGameWindow();
+        GameWindow gameWindow = createGameWindow(modelTarget, modelRobot, gameController);
         addWindow(gameWindow);
+
+        PositionWindow positionWindow = createPositionWindow(modelRobot);
+        addWindow(positionWindow);
 
         setJMenuBar(new MenuBar(this));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -55,18 +67,11 @@ public class MainApplicationFrame extends JFrame {
                 saveConfigApp();
                 exitWindow();
             }
-
         });
     }
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        Logger.debug("Протокол работает");
         try {
             logWindow.setIcon(configLogWindow.getViewStatus());
         } catch (PropertyVetoException e) {
@@ -85,8 +90,8 @@ public class MainApplicationFrame extends JFrame {
         return logWindow;
     }
 
-    protected GameWindow createGameWindow() {
-        GameWindow gameWindow = new GameWindow();
+    protected GameWindow createGameWindow(ModelTarget modelTarget, ModelRobot modelRobot, GameController gameController) {
+        GameWindow gameWindow = new GameWindow(modelTarget, modelRobot, gameController);
         gameWindow.setLocation(configGameWindow.getFrameLocation());
         gameWindow.setSize(configGameWindow.getFrameSize());
         try {
@@ -102,6 +107,13 @@ public class MainApplicationFrame extends JFrame {
         return gameWindow;
     }
 
+    protected PositionWindow createPositionWindow(ModelRobot modelRobot) {
+        PositionWindow positionWindow = new PositionWindow(modelRobot);
+        positionWindow.setLocation(20, 20);
+        positionWindow.setSize(360, 100);
+        return positionWindow;
+    }
+
     protected void exitWindow() {
         UIManager.put("OptionPane.yesButtonText", "Да");
         UIManager.put("OptionPane.noButtonText", "Нет");
@@ -114,6 +126,7 @@ public class MainApplicationFrame extends JFrame {
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }
+
 
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
