@@ -1,8 +1,6 @@
 package gui;
 
-
-import log.Logger;
-
+import model.log.Logger;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
