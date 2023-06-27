@@ -17,6 +17,7 @@ import javax.swing.JInternalFrame;
 
 
 import controller.GameController;
+import localization.InternalString;
 import model.log.Logger;
 import model.robot.ModelRobot;
 import model.robot.ModelTarget;
@@ -25,14 +26,18 @@ import guiConfig.ConfigInternalFrame;
 import guiConfig.ConfigMainPane;
 import guiConfig.FileConfig;
 
+import static localization.ApplicationLocalizer.applicationLocalizer;
+
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     private final ConfigMainPane configMainPane = FileConfig.restoreConfigMainPane();
     private final Map<String, ConfigInternalFrame> configInternalFrames = FileConfig.restoreConfigInternalPane();
-    private final ConfigInternalFrame configLogWindow = configInternalFrames.get("Протокол работы");
-    private final ConfigInternalFrame configGameWindow = configInternalFrames.get("Игровое поле");
+    @InternalString
+    private final ConfigInternalFrame configLogWindow = configInternalFrames.get("logFrame");
+    @InternalString
+    private final ConfigInternalFrame configGameWindow = configInternalFrames.get("gameFrame");
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -84,7 +89,7 @@ public class MainApplicationFrame extends JFrame {
         }
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug(Logger.loggerDefaultMessage);
         logWindow.setLocation(configLogWindow.getFrameLocation());
         logWindow.setSize(configLogWindow.getFrameSize());
         return logWindow;
@@ -115,12 +120,12 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected void exitWindow() {
-        UIManager.put("OptionPane.yesButtonText", "Да");
-        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.yesButtonText", applicationLocalizer.getLocalizedText("exitPaneYesButtonText"));
+        UIManager.put("OptionPane.noButtonText", applicationLocalizer.getLocalizedText("exitPaneNoButtonText"));
 
         int option = JOptionPane.showConfirmDialog(this,
-                "Вы уверены, что хотите закрыть приложение?",
-                "Подтверждение",
+                applicationLocalizer.getLocalizedText("exitPaneMessageText"),
+                applicationLocalizer.getLocalizedText("exitPaneTitle"),
                 JOptionPane.YES_NO_OPTION);
         if (option == JOptionPane.YES_OPTION) {
             setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -1,17 +1,32 @@
 package gui;
 
 import model.log.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.util.Observable;
+import java.util.Observer;
+
+import static localization.ApplicationLocalizer.applicationLocalizer;
 
 
 /**
  * Класс с MenuBar для графического интерфейса
  */
-public class MenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar implements Observer {
     private final MainApplicationFrame mainFrame;
+
+    private static String fileMenuTitle = applicationLocalizer.getLocalizedText("menuTitleFile");
+    private static String displayModeMenuTitle = applicationLocalizer.getLocalizedText("menuTitleDisplayMode");
+    private static String testMenuTitle = applicationLocalizer.getLocalizedText("menuTitleTests");
+    private static String languageMenuTitle = applicationLocalizer.getLocalizedText("menuTitleLanguage");
+
+    private final JMenu fileMenu = new JMenu(fileMenuTitle);
+    private final JMenu lookAndFeelMenu = new JMenu(displayModeMenuTitle);
+    private final JMenu testMenu = new JMenu(testMenuTitle);
+    private final JMenu languageMenu = new JMenu(languageMenuTitle);
 
     /**
      * Конструктор класса
@@ -20,25 +35,32 @@ public class MenuBar extends JMenuBar {
      */
     public MenuBar(MainApplicationFrame mainAppFrame) {
         mainFrame = mainAppFrame;
-        add(prepareFileMenu());
-        add(prepareLookAndFeelMenu());
-        add(prepareTestMenu());
+
+        applicationLocalizer.addObserver(this);
+
+        prepareFileMenu();
+        prepareLookAndFeelMenu();
+        prepareTestMenu();
+        prepareLanguageMenu();
+
+        add(fileMenu);
+        add(lookAndFeelMenu);
+        add(testMenu);
+        add(languageMenu);
     }
 
-    private JMenu prepareFileMenu() {
-        JMenu fileMenu = new JMenu("Файл");
+    private void prepareFileMenu() {
         fileMenu.setMnemonic(KeyEvent.VK_T);
         fileMenu.getAccessibleContext().setAccessibleDescription(
-                "Команды для файла");
+                applicationLocalizer.getLocalizedText("menuFileDescriptionComponent"));
         {
-            JMenuItem addLogMessageItem = new JMenuItem("Выйти", KeyEvent.VK_S);
+            JMenuItem addLogMessageItem = new JMenuItem(applicationLocalizer.getLocalizedText("menuFileItemExit"), KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
                 WindowEvent closingEvent = new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING);
                 Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closingEvent);
             });
             fileMenu.add(addLogMessageItem);
         }
-        return fileMenu;
     }
 
     /**
@@ -46,14 +68,13 @@ public class MenuBar extends JMenuBar {
      *
      * @return возвращает LookAndFeelMenu для JMenuBar
      */
-    private JMenu prepareLookAndFeelMenu() {
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+    private void prepareLookAndFeelMenu() {
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
+                applicationLocalizer.getLocalizedText("menuDisplayModeDescriptionComponent"));
 
         {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+            JMenuItem systemLookAndFeel = new JMenuItem(applicationLocalizer.getLocalizedText("menuFileItemSystemScheme"), KeyEvent.VK_S);
             systemLookAndFeel.addActionListener((event) -> {
                 setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 mainFrame.invalidate();
@@ -62,14 +83,13 @@ public class MenuBar extends JMenuBar {
         }
 
         {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
+            JMenuItem crossplatformLookAndFeel = new JMenuItem(applicationLocalizer.getLocalizedText("menuFileItemUniversalScheme"), KeyEvent.VK_S);
             crossplatformLookAndFeel.addActionListener((event) -> {
                 setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                 mainFrame.invalidate();
             });
             lookAndFeelMenu.add(crossplatformLookAndFeel);
         }
-        return lookAndFeelMenu;
     }
 
     /**
@@ -77,20 +97,51 @@ public class MenuBar extends JMenuBar {
      *
      * @return возвращает TestMenu для JMenuBar
      */
-    private JMenu prepareTestMenu() {
-        JMenu testMenu = new JMenu("Тесты");
+    private void prepareTestMenu() {
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
+                applicationLocalizer.getLocalizedText("menuTestsModeDescriptionComponent"));
 
         {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
+            JMenuItem addLogMessageItem = new JMenuItem(applicationLocalizer.getLocalizedText("menuTestsItemMessageInLog"), KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
+                Logger.debug(Logger.loggerDefaultMessage);
             });
             testMenu.add(addLogMessageItem);
         }
-        return testMenu;
+    }
+
+    private void prepareLanguageMenu() {
+        languageMenu.setMnemonic(KeyEvent.VK_T);
+
+        JRadioButtonMenuItem englishMenuItem = new JRadioButtonMenuItem(applicationLocalizer.getLocalizedText("menuButtonLanguageEn"));
+        englishMenuItem.addActionListener((event) -> {
+            applicationLocalizer.changeLanguage("en");
+            mainFrame.revalidate();
+            mainFrame.repaint();
+
+        });
+
+        JRadioButtonMenuItem russianMenuItem = new JRadioButtonMenuItem(applicationLocalizer.getLocalizedText("menuButtonLanguageRu"));
+        russianMenuItem.addActionListener((event) -> {
+            applicationLocalizer.changeLanguage("ru");
+            mainFrame.revalidate();
+            mainFrame.repaint();
+        });
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(englishMenuItem);
+        buttonGroup.add(russianMenuItem);
+
+        if (applicationLocalizer.getCurrentLanguage().equals("en")) {
+            englishMenuItem.setSelected(true);
+
+        } else {
+            russianMenuItem.setSelected(true);
+        }
+
+        languageMenu.add(englishMenuItem);
+        languageMenu.add(russianMenuItem);
     }
 
     private void setLookAndFeel(String className) {
@@ -102,4 +153,36 @@ public class MenuBar extends JMenuBar {
         }
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof String) {
+            String argument = (String) arg;
+            if (argument.equals("CHANGE_LANGUAGE")) {
+                updateComponents();
+            }
+        }
+    }
+
+    private void updateComponents() {
+        fileMenuTitle = applicationLocalizer.getLocalizedText("menuTitleFile");
+        displayModeMenuTitle = applicationLocalizer.getLocalizedText("menuTitleDisplayMode");
+        testMenuTitle = applicationLocalizer.getLocalizedText("menuTitleTests");
+        languageMenuTitle = applicationLocalizer.getLocalizedText("menuTitleLanguage");
+
+        fileMenu.setText(fileMenuTitle);
+        lookAndFeelMenu.setText(displayModeMenuTitle);
+        testMenu.setText(testMenuTitle);
+        languageMenu.setText(languageMenuTitle);
+
+        fileMenu.removeAll();
+        lookAndFeelMenu.removeAll();
+        testMenu.removeAll();
+        languageMenu.removeAll();
+
+
+        prepareFileMenu();
+        prepareLookAndFeelMenu();
+        prepareTestMenu();
+        prepareLanguageMenu();
+    }
 }
