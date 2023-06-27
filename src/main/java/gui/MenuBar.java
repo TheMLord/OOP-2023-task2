@@ -8,11 +8,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
+
 /**
  * Класс с MenuBar для графического интерфейса
  */
 public class MenuBar extends JMenuBar {
-    private MainApplicationFrame mainFrame;
+    private final MainApplicationFrame mainFrame;
 
     /**
      * Конструктор класса
