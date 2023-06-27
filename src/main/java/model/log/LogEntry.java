@@ -1,4 +1,4 @@
-package log;
+package model.log;
 
 public class LogEntry {
     private LogLevel m_logLevel;
