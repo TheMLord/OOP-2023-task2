@@ -1,6 +1,5 @@
 package localization;
 
-
 import java.util.Locale;
 import java.util.Observable;
 import java.util.ResourceBundle;

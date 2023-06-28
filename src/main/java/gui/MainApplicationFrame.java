@@ -1,15 +1,16 @@
 package gui;
 
 
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
 import java.beans.PropertyVetoException;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -17,6 +18,7 @@ import javax.swing.JInternalFrame;
 
 
 import controller.GameController;
+import localization.LocalizedComponent;
 import model.log.Logger;
 import model.robot.ModelRobot;
 import model.robot.ModelTarget;
@@ -28,12 +30,11 @@ import guiConfig.FileConfig;
 import static guiConfig.ConfigInternalFrame.*;
 import static localization.ApplicationLocalizer.applicationLocalizer;
 
-public class MainApplicationFrame extends JFrame {
+public class MainApplicationFrame extends JFrame implements Observer {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     private final ConfigMainPane configMainPane = FileConfig.restoreConfigMainPane();
     private final Map<String, ConfigInternalFrame> configInternalFrames = FileConfig.restoreConfigInternalPane();
-
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -46,6 +47,8 @@ public class MainApplicationFrame extends JFrame {
 
         desktopPane.setSize(configMainPane.getMainPaneSize());
         setContentPane(desktopPane);
+
+        applicationLocalizer.addObserver(this);
 
         ModelTarget modelTarget = new ModelTarget(100, 100);
         ModelRobot modelRobot = new ModelRobot(modelTarget, 100, 150);
@@ -152,5 +155,24 @@ public class MainApplicationFrame extends JFrame {
 
     private void saveConfigApp() {
         FileConfig.saveFiles(desktopPane);
+    }
+
+    private void changeLocalization() {
+        for (Component component : desktopPane.getComponents()) {
+            if (component instanceof LocalizedComponent) {
+                ((LocalizedComponent) component).updateComponents();
+            }
+        }
+        setJMenuBar(new MenuBar(this));
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof String) {
+            String argument = (String) arg;
+            if (argument.equals("CHANGE_LANGUAGE")) {
+                changeLocalization();
+            }
+        }
     }
 }

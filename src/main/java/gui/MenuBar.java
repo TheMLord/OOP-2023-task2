@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.Observable;
-import java.util.Observer;
 
 import static localization.ApplicationLocalizer.applicationLocalizer;
 
@@ -15,18 +13,8 @@ import static localization.ApplicationLocalizer.applicationLocalizer;
 /**
  * Класс с MenuBar для графического интерфейса
  */
-public class MenuBar extends JMenuBar implements Observer {
+public class MenuBar extends JMenuBar {
     private final MainApplicationFrame mainFrame;
-
-    private static String fileMenuTitle = applicationLocalizer.getLocalizedText("menuTitleFile");
-    private static String displayModeMenuTitle = applicationLocalizer.getLocalizedText("menuTitleDisplayMode");
-    private static String testMenuTitle = applicationLocalizer.getLocalizedText("menuTitleTests");
-    private static String languageMenuTitle = applicationLocalizer.getLocalizedText("menuTitleLanguage");
-
-    private final JMenu fileMenu = new JMenu(fileMenuTitle);
-    private final JMenu lookAndFeelMenu = new JMenu(displayModeMenuTitle);
-    private final JMenu testMenu = new JMenu(testMenuTitle);
-    private final JMenu languageMenu = new JMenu(languageMenuTitle);
 
     /**
      * Конструктор класса
@@ -36,20 +24,14 @@ public class MenuBar extends JMenuBar implements Observer {
     public MenuBar(MainApplicationFrame mainAppFrame) {
         mainFrame = mainAppFrame;
 
-        applicationLocalizer.addObserver(this);
-
-        prepareFileMenu();
-        prepareLookAndFeelMenu();
-        prepareTestMenu();
-        prepareLanguageMenu();
-
-        add(fileMenu);
-        add(lookAndFeelMenu);
-        add(testMenu);
-        add(languageMenu);
+        add(prepareFileMenu());
+        add(prepareLookAndFeelMenu());
+        add(prepareTestMenu());
+        add(prepareLanguageMenu());
     }
 
-    private void prepareFileMenu() {
+    private JMenu prepareFileMenu() {
+        JMenu fileMenu = new JMenu(applicationLocalizer.getLocalizedText("menuTitleFile"));
         fileMenu.setMnemonic(KeyEvent.VK_T);
         fileMenu.getAccessibleContext().setAccessibleDescription(
                 applicationLocalizer.getLocalizedText("menuFileDescriptionComponent"));
@@ -61,6 +43,7 @@ public class MenuBar extends JMenuBar implements Observer {
             });
             fileMenu.add(addLogMessageItem);
         }
+        return fileMenu;
     }
 
     /**
@@ -68,7 +51,8 @@ public class MenuBar extends JMenuBar implements Observer {
      *
      * @return возвращает LookAndFeelMenu для JMenuBar
      */
-    private void prepareLookAndFeelMenu() {
+    private JMenu prepareLookAndFeelMenu() {
+        JMenu lookAndFeelMenu = new JMenu(applicationLocalizer.getLocalizedText("menuTitleDisplayMode"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
                 applicationLocalizer.getLocalizedText("menuDisplayModeDescriptionComponent"));
@@ -90,6 +74,7 @@ public class MenuBar extends JMenuBar implements Observer {
             });
             lookAndFeelMenu.add(crossplatformLookAndFeel);
         }
+        return lookAndFeelMenu;
     }
 
     /**
@@ -97,7 +82,8 @@ public class MenuBar extends JMenuBar implements Observer {
      *
      * @return возвращает TestMenu для JMenuBar
      */
-    private void prepareTestMenu() {
+    private JMenu prepareTestMenu() {
+        JMenu testMenu = new JMenu(applicationLocalizer.getLocalizedText("menuTitleTests"));
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
                 applicationLocalizer.getLocalizedText("menuTestsModeDescriptionComponent"));
@@ -109,9 +95,12 @@ public class MenuBar extends JMenuBar implements Observer {
             });
             testMenu.add(addLogMessageItem);
         }
+        return testMenu;
     }
 
-    private void prepareLanguageMenu() {
+    private JMenu prepareLanguageMenu() {
+        JMenu languageMenu = new JMenu(applicationLocalizer.getLocalizedText("menuTitleLanguage"));
+
         languageMenu.setMnemonic(KeyEvent.VK_T);
 
         JRadioButtonMenuItem englishMenuItem = new JRadioButtonMenuItem(applicationLocalizer.getLocalizedText("menuButtonLanguageEn"));
@@ -142,6 +131,7 @@ public class MenuBar extends JMenuBar implements Observer {
 
         languageMenu.add(englishMenuItem);
         languageMenu.add(russianMenuItem);
+        return languageMenu;
     }
 
     private void setLookAndFeel(String className) {
@@ -153,36 +143,4 @@ public class MenuBar extends JMenuBar implements Observer {
         }
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof String) {
-            String argument = (String) arg;
-            if (argument.equals("CHANGE_LANGUAGE")) {
-                updateComponents();
-            }
-        }
-    }
-
-    private void updateComponents() {
-        fileMenuTitle = applicationLocalizer.getLocalizedText("menuTitleFile");
-        displayModeMenuTitle = applicationLocalizer.getLocalizedText("menuTitleDisplayMode");
-        testMenuTitle = applicationLocalizer.getLocalizedText("menuTitleTests");
-        languageMenuTitle = applicationLocalizer.getLocalizedText("menuTitleLanguage");
-
-        fileMenu.setText(fileMenuTitle);
-        lookAndFeelMenu.setText(displayModeMenuTitle);
-        testMenu.setText(testMenuTitle);
-        languageMenu.setText(languageMenuTitle);
-
-        fileMenu.removeAll();
-        lookAndFeelMenu.removeAll();
-        testMenu.removeAll();
-        languageMenu.removeAll();
-
-
-        prepareFileMenu();
-        prepareLookAndFeelMenu();
-        prepareTestMenu();
-        prepareLanguageMenu();
-    }
 }
