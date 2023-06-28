@@ -4,19 +4,24 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
 
+
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
+import localization.LocalizedComponent;
+import model.log.LogChangeListener;
+import model.log.LogEntry;
+import model.log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener {
+import static localization.ApplicationLocalizer.applicationLocalizer;
+
+public class LogWindow extends JInternalFrame implements LogChangeListener, LocalizedComponent {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
+    private static String titleWindow = applicationLocalizer.getLocalizedText("titleLogWindow");
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", true, true, true, true);
+        super(titleWindow, true, true, true, true);
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
@@ -41,5 +46,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener {
     @Override
     public void onLogChanged() {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    @Override
+    public void updateComponents() {
+        titleWindow = applicationLocalizer.getLocalizedText("titleLogWindow");
+        this.setTitle(titleWindow);
     }
 }

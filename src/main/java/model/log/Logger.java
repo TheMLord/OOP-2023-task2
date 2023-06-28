@@ -1,6 +1,10 @@
-package log;
+package model.log;
+
+import localization.InternalString;
 
 public final class Logger {
+    @InternalString
+    public static final String loggerDefaultMessage = "The protocol works";
     private static final LogWindowSource defaultLogSource;
 
     static {
