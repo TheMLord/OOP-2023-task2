@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -21,8 +22,6 @@ public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ConfigMainPane configMainPane = FileConfig.restoreConfigMainPane();
     private final Map<String, ConfigInternalFrame> configInternalFrames = FileConfig.restoreConfigInternalPane();
-    private final ConfigInternalFrame configLogWindow = configInternalFrames.get("Протокол работы");
-    private final ConfigInternalFrame configGameWindow = configInternalFrames.get("Игровое поле");
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -55,16 +54,18 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected LogWindow createLogWindow() {
+        ConfigInternalFrame configLogWindow = configInternalFrames.get("logFrame");
+
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         try {
-            logWindow.setIcon(configLogWindow.getViewStatus());
+            logWindow.setIcon(configLogWindow.getFrameIsIconStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             logWindow.setClosed(configLogWindow.getClosedStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
@@ -75,18 +76,20 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected GameWindow createGameWindow() {
+        ConfigInternalFrame configGameWindow = configInternalFrames.get("gameFrame");
+
         GameWindow gameWindow = new GameWindow();
         gameWindow.setLocation(configGameWindow.getFrameLocation());
         gameWindow.setSize(configGameWindow.getFrameSize());
         try {
-            gameWindow.setIcon(configGameWindow.getViewStatus());
+            gameWindow.setIcon(configGameWindow.getFrameIsIconStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             gameWindow.setClosed(configGameWindow.getClosedStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return gameWindow;
     }
@@ -97,7 +100,6 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void saveConfigApp() {
-        FileConfig fileConfig = new FileConfig();
-        fileConfig.saveFiles(desktopPane);
+        FileConfig.saveFiles(desktopPane);
     }
 }
