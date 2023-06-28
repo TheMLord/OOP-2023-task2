@@ -8,6 +8,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static guiConfig.ConfigInternalFrame.gameFrameId;
+import static guiConfig.ConfigInternalFrame.logFrameId;
+
 public class FileConfig {
     @InternalString
     private static final String PATH_TO_SAVE = System.getProperty("user.home") + File.separator + "guiRobotsConfig";
@@ -16,13 +19,7 @@ public class FileConfig {
     @InternalString
     private static final File FILE_CONFIG_INTERNAL_FRAME = new File(PATH_TO_SAVE + File.separator + "configInternalFrame.bin");
 
-    public FileConfig() {
-        checkExistDir();
-        checkExistFile();
-    }
-
-
-    private void checkExistDir() {
+    private static void checkExistDir() {
         File pathToDir = new File(PATH_TO_SAVE);
         if (!pathToDir.exists()) {
             pathToDir.mkdirs();
@@ -30,7 +27,7 @@ public class FileConfig {
     }
 
 
-    private void checkExistFile() {
+    private static void checkExistFile() {
         if (!FILE_CONFIG_MAIN_PANE.exists()) {
             createConfigFile(FILE_CONFIG_MAIN_PANE);
         }
@@ -39,7 +36,7 @@ public class FileConfig {
         }
     }
 
-    private void createConfigFile(File fileConfigName) {
+    private static void createConfigFile(File fileConfigName) {
         try {
             fileConfigName.createNewFile();
         } catch (IOException e) {
@@ -47,7 +44,10 @@ public class FileConfig {
         }
     }
 
-    public void saveFiles(JDesktopPane jDesktopPane) {
+    public static void saveFiles(JDesktopPane jDesktopPane) {
+        checkExistDir();
+        checkExistFile();
+
         ConfigMainPane configMainPane = new ConfigMainPane(jDesktopPane);
 
         JInternalFrame[] jInternalFrames = jDesktopPane.getAllFrames();
@@ -58,22 +58,36 @@ public class FileConfig {
         }
 
         try {
-            try (ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(FILE_CONFIG_MAIN_PANE))) {
-                fileOut.writeObject(configMainPane);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            OutputStream os = new FileOutputStream(FILE_CONFIG_MAIN_PANE);
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os));
+                try {
+                    oos.writeObject(configMainPane);
+                    oos.flush();
+                } finally {
+                    oos.close();
+                }
+            } finally {
+                os.close();
             }
-        } catch (RuntimeException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            try (ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(FILE_CONFIG_INTERNAL_FRAME))) {
-                fileOut.writeObject(configInternalFrames);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            OutputStream os = new FileOutputStream(FILE_CONFIG_INTERNAL_FRAME);
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os));
+                try {
+                    oos.writeObject(configInternalFrames);
+                    oos.flush();
+                } finally {
+                    oos.close();
+                }
+            } finally {
+                os.close();
             }
-        } catch (RuntimeException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -88,6 +102,7 @@ public class FileConfig {
             } catch (IOException | ClassNotFoundException e) {
                 return new ConfigMainPane(Toolkit.getDefaultToolkit().getScreenSize());
             }
+
         } else {
             return new ConfigMainPane(Toolkit.getDefaultToolkit().getScreenSize());
         }
@@ -100,50 +115,50 @@ public class FileConfig {
             try (ObjectInputStream fileIn = new ObjectInputStream(new FileInputStream(FILE_CONFIG_INTERNAL_FRAME))) {
                 ConfigInternalFrame[] configInternalFrames = (ConfigInternalFrame[]) fileIn.readObject();
                 for (ConfigInternalFrame configInternalFrame : configInternalFrames) {
-                    if (configInternalFrame.getFrameId().equals("logFrame")) {
-                        configInternalFrameHashMaphashMap.put("logFrame", configInternalFrame);
-                    } else if (configInternalFrame.getFrameId().equals("gameFrame")) {
-                        configInternalFrameHashMaphashMap.put("gameFrame", configInternalFrame);
+                    if (configInternalFrame.getFrameId().equals(logFrameId)) {
+                        configInternalFrameHashMaphashMap.put(logFrameId, configInternalFrame);
+                    } else if (configInternalFrame.getFrameId().equals(gameFrameId)) {
+                        configInternalFrameHashMaphashMap.put(gameFrameId, configInternalFrame);
                     }
                 }
                 return configInternalFrameHashMaphashMap;
 
             } catch (IOException | ClassNotFoundException e) {
                 configInternalFrameHashMaphashMap.put(
-                        "logFrame",
+                        logFrameId,
                         new ConfigInternalFrame(
                                 false,
                                 false,
                                 new Dimension(300, 800),
                                 new Point(10, 10),
-                                "logFrame"));
+                                logFrameId));
                 configInternalFrameHashMaphashMap.put(
-                        "gameFrame",
+                        gameFrameId,
                         new ConfigInternalFrame(
                                 false,
                                 false,
                                 new Dimension(400, 400),
                                 new Point(0, 0),
-                                "gameFrame"));
+                                gameFrameId));
                 return configInternalFrameHashMaphashMap;
             }
         } else {
             configInternalFrameHashMaphashMap.put(
-                    "logFrame",
+                    logFrameId,
                     new ConfigInternalFrame(
                             false,
                             false,
                             new Dimension(300, 800),
                             new Point(10, 10),
-                            "logFrame"));
+                            logFrameId));
             configInternalFrameHashMaphashMap.put(
-                    "gameFrame",
+                    gameFrameId,
                     new ConfigInternalFrame(
                             false,
                             false,
                             new Dimension(400, 400),
                             new Point(0, 0),
-                            "gameFrame"));
+                            gameFrameId));
             return configInternalFrameHashMaphashMap;
         }
     }

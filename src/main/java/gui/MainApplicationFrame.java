@@ -17,7 +17,6 @@ import javax.swing.JInternalFrame;
 
 
 import controller.GameController;
-import localization.InternalString;
 import model.log.Logger;
 import model.robot.ModelRobot;
 import model.robot.ModelTarget;
@@ -29,15 +28,15 @@ import guiConfig.FileConfig;
 import static localization.ApplicationLocalizer.applicationLocalizer;
 
 
+import static guiConfig.ConfigInternalFrame.gameFrameId;
+import static guiConfig.ConfigInternalFrame.logFrameId;
+
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     private final ConfigMainPane configMainPane = FileConfig.restoreConfigMainPane();
     private final Map<String, ConfigInternalFrame> configInternalFrames = FileConfig.restoreConfigInternalPane();
-    @InternalString
-    private final ConfigInternalFrame configLogWindow = configInternalFrames.get("logFrame");
-    @InternalString
-    private final ConfigInternalFrame configGameWindow = configInternalFrames.get("gameFrame");
+
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -76,16 +75,18 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected LogWindow createLogWindow() {
+        ConfigInternalFrame configLogWindow = configInternalFrames.get(logFrameId);
+
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         try {
-            logWindow.setIcon(configLogWindow.getViewStatus());
+            logWindow.setIcon(configLogWindow.getFrameIsIconStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             logWindow.setClosed(configLogWindow.getClosedStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
@@ -96,18 +97,20 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected GameWindow createGameWindow(ModelTarget modelTarget, ModelRobot modelRobot, GameController gameController) {
+        ConfigInternalFrame configGameWindow = configInternalFrames.get(gameFrameId);
         GameWindow gameWindow = new GameWindow(modelTarget, modelRobot, gameController);
+
         gameWindow.setLocation(configGameWindow.getFrameLocation());
         gameWindow.setSize(configGameWindow.getFrameSize());
         try {
-            gameWindow.setIcon(configGameWindow.getViewStatus());
+            gameWindow.setIcon(configGameWindow.getFrameIsIconStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             gameWindow.setClosed(configGameWindow.getClosedStatus());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return gameWindow;
     }
@@ -139,7 +142,6 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void saveConfigApp() {
-        FileConfig fileConfig = new FileConfig();
-        fileConfig.saveFiles(desktopPane);
+        FileConfig.saveFiles(desktopPane);
     }
 }
