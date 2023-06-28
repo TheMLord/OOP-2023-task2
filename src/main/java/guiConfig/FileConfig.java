@@ -6,6 +6,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static guiConfig.ConfigInternalFrame.gameFrameId;
+import static guiConfig.ConfigInternalFrame.logFrameId;
+
 public class FileConfig {
     private static final String PATH_TO_SAVE = System.getProperty("user.home") + File.separator + "guiRobotsConfig";
     private static final File FILE_CONFIG_MAIN_PANE = new File(PATH_TO_SAVE + File.separator + "configMainPane.bin");
@@ -108,50 +111,50 @@ public class FileConfig {
 
                 ConfigInternalFrame[] configInternalFrames = (ConfigInternalFrame[]) fileIn.readObject();
                 for (ConfigInternalFrame configInternalFrame : configInternalFrames) {
-                    if (configInternalFrame.getFrameId().equals("logFrame")) {
-                        configInternalFrameHashMaphashMap.put("logFrame", configInternalFrame);
-                    } else if (configInternalFrame.getFrameId().equals("gameFrame")) {
-                        configInternalFrameHashMaphashMap.put("gameFrame", configInternalFrame);
+                    if (configInternalFrame.getFrameId().equals(logFrameId)) {
+                        configInternalFrameHashMaphashMap.put(logFrameId, configInternalFrame);
+                    } else if (configInternalFrame.getFrameId().equals(gameFrameId)) {
+                        configInternalFrameHashMaphashMap.put(gameFrameId, configInternalFrame);
                     }
                 }
                 return configInternalFrameHashMaphashMap;
 
             } catch (IOException | ClassNotFoundException e) {
                 configInternalFrameHashMaphashMap.put(
-                        "logFrame",
+                        logFrameId,
                         new ConfigInternalFrame(
                                 false,
                                 false,
                                 new Dimension(300, 800),
                                 new Point(10, 10),
-                                "logFrame"));
+                                logFrameId));
                 configInternalFrameHashMaphashMap.put(
-                        "gameFrame",
+                        gameFrameId,
                         new ConfigInternalFrame(
                                 false,
                                 false,
                                 new Dimension(400, 400),
                                 new Point(0, 0),
-                                "gameFrame"));
+                                gameFrameId));
                 return configInternalFrameHashMaphashMap;
             }
         } else {
             configInternalFrameHashMaphashMap.put(
-                    "logFrame",
+                    logFrameId,
                     new ConfigInternalFrame(
                             false,
                             false,
                             new Dimension(300, 800),
                             new Point(10, 10),
-                            "logFrame"));
+                            logFrameId));
             configInternalFrameHashMaphashMap.put(
-                    "gameFrame",
+                    gameFrameId,
                     new ConfigInternalFrame(
                             false,
                             false,
                             new Dimension(400, 400),
                             new Point(0, 0),
-                            "gameFrame"));
+                            gameFrameId));
             return configInternalFrameHashMaphashMap;
         }
     }

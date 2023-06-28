@@ -8,6 +8,8 @@ import java.io.*;
  * Класс с конфигурацией InternalFrame
  */
 public class ConfigInternalFrame implements Serializable {
+    public static final String gameFrameId = "gameFrame";
+    public static final String logFrameId = "logFrame";
     private final boolean closedStatus;
     private final boolean frameIsIconStatus;
     private final Dimension frameSize;
@@ -24,9 +26,9 @@ public class ConfigInternalFrame implements Serializable {
 
     private String getIdFrame(String titleFrame) {
         if (titleFrame.equals("Игровое поле")) {
-            return "gameFrame";
+            return gameFrameId;
         } else if (titleFrame.equals("Протокол работы")) {
-            return "logFrame";
+            return logFrameId;
         }
         return "";
     }

@@ -18,6 +18,9 @@ import guiConfig.ConfigMainPane;
 import guiConfig.FileConfig;
 import log.Logger;
 
+import static guiConfig.ConfigInternalFrame.gameFrameId;
+import static guiConfig.ConfigInternalFrame.logFrameId;
+
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ConfigMainPane configMainPane = FileConfig.restoreConfigMainPane();
@@ -54,7 +57,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected LogWindow createLogWindow() {
-        ConfigInternalFrame configLogWindow = configInternalFrames.get("logFrame");
+        ConfigInternalFrame configLogWindow = configInternalFrames.get(logFrameId);
 
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         try {
@@ -76,7 +79,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected GameWindow createGameWindow() {
-        ConfigInternalFrame configGameWindow = configInternalFrames.get("gameFrame");
+        ConfigInternalFrame configGameWindow = configInternalFrames.get(gameFrameId);
 
         GameWindow gameWindow = new GameWindow();
         gameWindow.setLocation(configGameWindow.getFrameLocation());
