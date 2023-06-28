@@ -8,8 +8,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static guiConfig.ConfigInternalFrame.gameFrameId;
-import static guiConfig.ConfigInternalFrame.logFrameId;
+import static guiConfig.ConfigInternalFrame.*;
 
 public class FileConfig {
     @InternalString
@@ -115,10 +114,11 @@ public class FileConfig {
             try (ObjectInputStream fileIn = new ObjectInputStream(new FileInputStream(FILE_CONFIG_INTERNAL_FRAME))) {
                 ConfigInternalFrame[] configInternalFrames = (ConfigInternalFrame[]) fileIn.readObject();
                 for (ConfigInternalFrame configInternalFrame : configInternalFrames) {
-                    if (configInternalFrame.getFrameId().equals(logFrameId)) {
-                        configInternalFrameHashMaphashMap.put(logFrameId, configInternalFrame);
-                    } else if (configInternalFrame.getFrameId().equals(gameFrameId)) {
-                        configInternalFrameHashMaphashMap.put(gameFrameId, configInternalFrame);
+                    switch (configInternalFrame.getFrameId()) {
+                        case logFrameId -> configInternalFrameHashMaphashMap.put(logFrameId, configInternalFrame);
+                        case gameFrameId -> configInternalFrameHashMaphashMap.put(gameFrameId, configInternalFrame);
+                        case positionFrameId ->
+                                configInternalFrameHashMaphashMap.put(positionFrameId, configInternalFrame);
                     }
                 }
                 return configInternalFrameHashMaphashMap;
@@ -140,6 +140,14 @@ public class FileConfig {
                                 new Dimension(400, 400),
                                 new Point(0, 0),
                                 gameFrameId));
+                configInternalFrameHashMaphashMap.put(
+                        positionFrameId,
+                        new ConfigInternalFrame(
+                                false,
+                                false,
+                                new Dimension(360, 100),
+                                new Point(20, 20),
+                                positionFrameId));
                 return configInternalFrameHashMaphashMap;
             }
         } else {
@@ -159,6 +167,14 @@ public class FileConfig {
                             new Dimension(400, 400),
                             new Point(0, 0),
                             gameFrameId));
+            configInternalFrameHashMaphashMap.put(
+                    positionFrameId,
+                    new ConfigInternalFrame(
+                            false,
+                            false,
+                            new Dimension(360, 100),
+                            new Point(20, 20),
+                            positionFrameId));
             return configInternalFrameHashMaphashMap;
         }
     }

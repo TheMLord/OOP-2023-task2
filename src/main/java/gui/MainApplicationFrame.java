@@ -25,11 +25,8 @@ import guiConfig.ConfigInternalFrame;
 import guiConfig.ConfigMainPane;
 import guiConfig.FileConfig;
 
+import static guiConfig.ConfigInternalFrame.*;
 import static localization.ApplicationLocalizer.applicationLocalizer;
-
-
-import static guiConfig.ConfigInternalFrame.gameFrameId;
-import static guiConfig.ConfigInternalFrame.logFrameId;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -116,9 +113,21 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected PositionWindow createPositionWindow(ModelRobot modelRobot) {
+        ConfigInternalFrame configPositionWindow = configInternalFrames.get(positionFrameId);
         PositionWindow positionWindow = new PositionWindow(modelRobot);
-        positionWindow.setLocation(20, 20);
-        positionWindow.setSize(360, 100);
+
+        positionWindow.setLocation(configPositionWindow.getFrameLocation());
+        positionWindow.setSize(configPositionWindow.getFrameSize());
+        try {
+            positionWindow.setIcon(configPositionWindow.getFrameIsIconStatus());
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+        try {
+            positionWindow.setClosed(configPositionWindow.getClosedStatus());
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
         return positionWindow;
     }
 

@@ -16,6 +16,9 @@ public class ConfigInternalFrame implements Serializable {
     public static final String gameFrameId = "gameFrame";
     @InternalString
     public static final String logFrameId = "logFrame";
+    @InternalString
+    public static final String positionFrameId = "positionFrame";
+
     private final boolean closedStatus;
     private final boolean frameIsIconStatus;
     private final Dimension frameSize;
@@ -35,7 +38,8 @@ public class ConfigInternalFrame implements Serializable {
             return gameFrameId;
         } else if (titleFrame.equals(applicationLocalizer.getLocalizedText("titleLogWindow"))) {
             return logFrameId;
-        }
+        } else if (titleFrame.equals(applicationLocalizer.getLocalizedText("titlePositionWindow")))
+            return positionFrameId;
         return "";
     }
 
